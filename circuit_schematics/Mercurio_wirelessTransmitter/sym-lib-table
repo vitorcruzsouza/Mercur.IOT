@@ -1,0 +1,3 @@
+(sym_lib_table
+  (lib (name "Mercurio_wirelessTransmitter-rescue")(type "Legacy")(uri "${KIPRJMOD}/Mercurio_wirelessTransmitter-rescue.lib")(options "")(descr ""))
+)

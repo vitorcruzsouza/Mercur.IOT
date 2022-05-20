@@ -1,4 +1,4 @@
-20239479242130501
+20236971469023942
 ATMEGA8U2-MUR
 QFN50P500X500X100-33N
 <b>QFP-32 package</b><p>5x5 mm case, 0.5 mm lead pitch
@@ -8106,13 +8106,6 @@ BNC connector
 2
 2
 Connector_Coaxial
-BNC_TEConnectivity_1478035_Horizontal
-BNC RF Interface, PCB mount 4 pin, Right Angle, Bayonet, 50Ohm, 4GHz, https://www.te.com/commerce/DocumentDelivery/DDEController?Action=showdoc&DocId=Customer+Drawing%7F1478035%7FB1%7Fpdf%7FEnglish%7FENG_CD_1478035_B1.pdf%7F1-1478035-0
-BNC RF interface bayonet 50ohm
-0
-5
-2
-Connector_Coaxial
 BNC_TEConnectivity_1478204_Vertical
 BNC female PCB mount 4 pin straight chassis connector http://www.te.com/usa-en/product-1-1478204-0.html
 BNC female PCB mount 4 pin straight chassis connector 
@@ -8158,13 +8151,6 @@ Connector_Coaxial
 MMCX_Molex_73415-1471_Vertical
 http://www.molex.com/pdm_docs/sd/734151471_sd.pdf
 Molex MMCX Coaxial Connector 50 ohms Female Jack Vertical THT
-0
-5
-2
-Connector_Coaxial
-SMA_Amphenol_901-143_Horizontal
- Amphenol RF 901-143 https://www.amphenolrf.com/library/download/link/link_id/585682
-SMA THT Female Jack Horizontal
 0
 5
 2
@@ -78714,6 +78700,13 @@ rotary encoder
 0
 5
 4
+SIM7600E-H
+IC_SIM7600E-H
+
+
+0
+87
+87
 Sensor
 Aosong_DHT11_5.5x12.0_P2.54mm
 Temperature and humidity module, http://akizukidenshi.com/download/ds/aosong/DHT11.pdf

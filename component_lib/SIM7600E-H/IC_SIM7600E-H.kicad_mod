@@ -148,4 +148,9 @@
     (scale (xyz 1 1 1))
     (rotate (xyz -90 0 0))
   )
+  (model "D:/# Arquivos/4- Meus Projetos/A. Projetos/wirelessTransmitter/wirelessTransmitter_VCS_TRACTIAN/component_lib/SIM7600E-H/SIM7600E-H--3DModel-STEP-56544.STEP"
+    (offset (xyz 0 0 0))
+    (scale (xyz 1 1 1))
+    (rotate (xyz -90 0 0))
+  )
 )

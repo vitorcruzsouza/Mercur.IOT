@@ -1,3 +1,4 @@
 (sym_lib_table
   (lib (name "Mercurio_wirelessTransmitter-rescue")(type "Legacy")(uri "${KIPRJMOD}/Mercurio_wirelessTransmitter-rescue.lib")(options "")(descr ""))
+  (lib (name "1043")(type "Legacy")(uri "D:/# Arquivos/4- Meus Projetos/A. Projetos/wirelessTransmitter/wirelessTransmitter_VCS_TRACTIAN/component_lib/1043/1043.lib")(options "")(descr ""))
 )

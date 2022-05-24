@@ -1,4 +1,4 @@
-(pcb "C:\Users\vcruz\Documents\2. Meus Projetos\wirelessTransmitter_VCS_TRACTIAN\circuit_schematics\Mercurio_wirelessTransmitter\Mercurio_wirelessTransmitter.dsn"
+(pcb "C:\Users\vcruz\Documents\2. Meus Projetos\wirelessTransmitter_VCS_TRACTIAN\circuit_schematics\Mercurio_wirelessTransmitter\temp\Mercurio_wirelessTransmitter1.dsn"
   (parser
     (string_quote ")
     (space_in_quoted_tokens on)
@@ -35,12 +35,6 @@
     )
   )
   (placement
-    (component ""
-      (place HOLE_3 160020.000000 -43180.000000 front 0.000000)
-      (place HOLE_1 39370.000000 -43180.000000 front 0.000000)
-      (place HOLE_2 39370.000000 -81280.000000 front 0.000000)
-      (place HOLE_4 127000.000000 -81280.000000 front 0.000000)
-    )
     (component Resistor_SMD:R_0201_0603Metric
       (place R13 114298.810000 -75515.911000 front 180.000000 (PN 4.7k))
     )
@@ -220,9 +214,6 @@
     )
   )
   (library
-    (image ""
-      (pin Round[A]Pad_5600_um 1 0 0)
-    )
     (image Resistor_SMD:R_0201_0603Metric
       (outline (path signal 50  -700 -350  -700 350))
       (outline (path signal 50  -700 350  700 350))
@@ -1389,11 +1380,6 @@
     (padstack Round[A]Pad_3000_um
       (shape (circle F.Cu 3000))
       (shape (circle B.Cu 3000))
-      (attach off)
-    )
-    (padstack Round[A]Pad_5600_um
-      (shape (circle F.Cu 5600))
-      (shape (circle B.Cu 5600))
       (attach off)
     )
     (padstack Oval[A]Pad_1050x1500_um

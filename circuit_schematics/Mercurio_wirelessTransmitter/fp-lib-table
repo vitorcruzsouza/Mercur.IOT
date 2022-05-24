@@ -1,4 +1,3 @@
 (fp_lib_table
-  (lib (name "1048P")(type "KiCad")(uri "D:/# Arquivos/4- Meus Projetos/A. Projetos/wirelessTransmitter/wirelessTransmitter_VCS_TRACTIAN/component_lib/1048P")(options "")(descr ""))
-  (lib (name "BQ29707DSET")(type "KiCad")(uri "D:/# Arquivos/4- Meus Projetos/A. Projetos/wirelessTransmitter/wirelessTransmitter_VCS_TRACTIAN/component_lib/BQ29707DSET")(options "")(descr ""))
+  (lib (name "BQ29707DSET")(type "KiCad")(uri "C:/Users/vcruz/Documents/2. Meus Projetos/wirelessTransmitter_VCS_TRACTIAN/component_lib/BQ29707DSET")(options "")(descr ""))
 )

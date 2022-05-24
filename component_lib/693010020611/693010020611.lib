@@ -1,0 +1,31 @@
+EESchema-LIBRARY Version 2.3
+#encoding utf-8
+#(c) SnapEDA 2016 (snapeda.com)
+#This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License (CC BY-SA) with Design Exception 1.0
+#
+# 693010020611
+#
+DEF 693010020611 J 0 40 Y Y 1 L N
+F0 "J" -200 430 50 H V L BNN
+F1 "693010020611" -200 -600 50 H V L BNN
+F2 "WURTH_693010020611" 0 0 50 H I L BNN
+F3 "" 0 0 50 H I L BNN
+F4 "Manufacturer Recommendation" 0 0 50 H I L BNN "STANDARD"
+F5 "Wurth Electronics" 0 0 50 H I L BNN "MANUFACTURER"
+F6 "F" 0 0 50 H I L BNN "PARTREV"
+DRAW
+S -200 -500 200 400 0 0 10 f
+X VCC 1 -400 300 200 R 40 40 0 0 P 
+X RESET 2 -400 200 200 R 40 40 0 0 P 
+X CLOCK 3 -400 100 200 R 40 40 0 0 P 
+X GND 4 -400 0 200 R 40 40 0 0 P 
+X VPP 5 -400 -100 200 R 40 40 0 0 P 
+X I/O 6 -400 -200 200 R 40 40 0 0 P 
+X SHIELD S1 -400 -400 200 R 40 40 0 0 P 
+X SHIELD S2 -400 -400 200 R 40 40 0 0 P 
+X SHIELD S3 -400 -400 200 R 40 40 0 0 P 
+X SHIELD S4 -400 -400 200 R 40 40 0 0 P 
+ENDDRAW
+ENDDEF
+#
+# End Library

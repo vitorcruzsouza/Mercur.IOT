@@ -445,4 +445,9 @@
     (scale (xyz 1 1 1))
     (rotate (xyz -90 0 0))
   )
+  (model "C:/Users/vcruz/Documents/2. Meus Projetos/wirelessTransmitter_VCS_TRACTIAN/component_lib/CONSMA001-SMD-G/CONSMA001-SMD-G--3DModel-STEP-56544.STEP"
+    (offset (xyz 0 0 0))
+    (scale (xyz 1 1 1))
+    (rotate (xyz -90 0 0))
+  )
 )

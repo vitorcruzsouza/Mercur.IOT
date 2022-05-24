@@ -1,0 +1,33 @@
+EESchema-LIBRARY Version 2.3
+#encoding utf-8
+#(c) SnapEDA 2016 (snapeda.com)
+#This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License (CC BY-SA) with Design Exception 1.0
+#
+# USB3075-30-A
+#
+DEF USB3075-30-A J 0 40 N Y 1 L N
+F0 "J" -301 422 50 H V L BNN
+F1 "USB3075-30-A" -301 -502 50 H V L BNN
+F2 "GCT_USB3075-30-A" 0 0 50 H I L BNN
+F3 "" 0 0 50 H I L BNN
+F4 "Global Connector Technology" 0 0 50 H I L BNN "MANUFACTURER"
+F5 "2.66mm" 0 0 50 H I L BNN "MAXIMUM_PACKAGE_HEIGHT"
+F6 "Manufacturer recommendations" 0 0 50 H I L BNN "STANDARD"
+F7 "D3" 0 0 50 H I L BNN "PARTREV"
+DRAW
+S -300 -400 300 400 0 0 10 f
+X VBUS 1 -400 300 100 R 40 40 0 0 W 
+X D- 2 -400 200 100 R 40 40 0 0 B 
+X D+ 3 -400 100 100 R 40 40 0 0 B 
+X GND 5 -400 -100 100 R 40 40 0 0 W 
+X SHIELD S1 -400 -300 100 R 40 40 0 0 P 
+X SHIELD S2 -400 -300 100 R 40 40 0 0 P 
+X SHIELD S3 -400 -300 100 R 40 40 0 0 P 
+X SHIELD S4 -400 -300 100 R 40 40 0 0 P 
+X SHIELD S5 -400 -300 100 R 40 40 0 0 P 
+X SHIELD S6 -400 -300 100 R 40 40 0 0 P 
+X ID 4 -400 0 100 R 40 40 0 0 B 
+ENDDRAW
+ENDDEF
+#
+# End Library

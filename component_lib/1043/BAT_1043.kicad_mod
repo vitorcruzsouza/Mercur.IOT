@@ -33,7 +33,7 @@
   (pad "" np_thru_hole circle (at 27.73 -7.87) (size 3.55 3.55) (drill 3.55) (layers *.Cu *.Mask) (tstamp e18cdb68-fa88-4b1d-894a-bb4946de733c))
   (pad "N" thru_hole circle (at -36.11 0) (size 1.98 1.98) (drill 1.32) (layers *.Cu *.Mask) (tstamp 3180871a-f6f9-4149-9da3-4fb97bc75bec))
   (pad "P" thru_hole circle (at 36.11 0) (size 1.98 1.98) (drill 1.32) (layers *.Cu *.Mask) (tstamp 6bcfbef7-455a-4f2a-a524-76cb36eb414f))
-  (model "D:/# Arquivos/4- Meus Projetos/A. Projetos/wirelessTransmitter/wirelessTransmitter_VCS_TRACTIAN/component_lib/1043/1043.step"
+  (model "C:/Users/vcruz/Documents/2. Meus Projetos/wirelessTransmitter_VCS_TRACTIAN/component_lib/1043/1043.step"
     (offset (xyz 0 0 0))
     (scale (xyz 1 1 1))
     (rotate (xyz -90 0 0))

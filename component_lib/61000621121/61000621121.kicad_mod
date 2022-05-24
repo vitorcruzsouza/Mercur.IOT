@@ -33,4 +33,9 @@
     (scale (xyz 1 1 1))
     (rotate (xyz 0 0 0))
   )
+  (model "C:/Users/vcruz/Documents/2. Meus Projetos/wirelessTransmitter_VCS_TRACTIAN/component_lib/61000621121/61000621121.step"
+    (offset (xyz -2.5 0 2))
+    (scale (xyz 1 1 1))
+    (rotate (xyz 0 0 0))
+  )
 )

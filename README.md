@@ -1,14 +1,55 @@
-# [EN/US] <h3>
+EN-US: This content was written in both English and Portuguese. To access content in English, click here:
 
-# Wireless Transmitter
-Repository dedicated to documenting progress on developing a full wireless sensor data transmitter.
+[English Description](#[en/us]-mercuriot---sensor-data-transmitter-via-gsm)
+
+PT-BR: Este conteúdo foi escrito em Inglês e em Português. Para acessar o conteúdo em Português, clique aqui:
+
+[Descrição em Português](#[pt/br]-mercuriot---transmissor-de-dados-de-sensor-via-gsm)
+
+---
+
+# [EN/US] MercurIOT - Sensor Data Transmitter via GSM
+
+## Objective
+
+Fully developing a wireless data transmission solution for industrial applications, capable of sending 500kB of sensing data remotely to be used in machine operation conditions monitoring.
+
+The scope of this project encopasses the development of both the PCB and firmware required for operation of the microcontrollers utilized.
+
+## Contents
+
+<!-- toc -->
+
+- Platform
+  - [Technical Specifications (#technical-specifications)
+
+<!-- tocstop -->
+
+## Platform
+
+### Technical Specifications 
 
 ---
   
-# [PT/BR] <h3>
+# [PT/BR] MercurIOT - Transmissor de Dados de Sensor via GSM
 
-# Transmissor Sem Fio
-Repositório dedicado à documentar o progresso no desenvolvimento de um transmissor sem fio de dados sensoriais completo.
-  
-# Considerações do Projeto <h4>
-    https://docs.google.com/document/d/1wDGSCQow4kBcbGMmW3fagMc6VnhKl9raMJV5_B62kDU/edit?usp=sharing
+## Objetivo
+
+Desenvolver uma solução completa de transmissão de dados para aplicações industriais, capaz de enviar 500kB de dados de sensoriamento remotamente a ser usado no monitoramento de condições de operação de máquinas.
+
+O escopo deste projeto abriga o desenvolvimento de ambos PCI e firmware necessário para operação dos microcontroladores utilizados.
+
+## Contents
+
+<!-- toc -->
+
+- Plataforma
+  - Especificações Técnicas (#especificações-técnicas)
+
+<!-- tocstop -->
+
+## Plataforma
+
+### Especificações Técnicas 
+
+---

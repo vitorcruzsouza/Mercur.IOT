@@ -1,26 +1,40 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include <SoftwareSerial.h>
+#include <Adafruit_ADS1015.h>
+#include <ArduinoLowPower.h>
+ 
+Adafruit_ADS1115 ads;
+const float multiplier = 0.1875F;
 
-SoftwareSerial mySerial(3,2);
-#define sw 5
-#define led 7
-int flag = 1;
-int flag1 = 0;
-int state=0;
+SoftwareSerial mySerial(6,7);
+
+
 String Publish = "sensorReading/publish"; //Publish Topic
 String Subscribe = "sensorReading/subscribe"; //Subscribe Topic
+
+void GSM_LTE_START(){
+
+//This sets the cellphone provider. In this case, Claro BR is being used as an example.
+mySerial.print("AT+CSTT=\"claro.com.br\",\"claro\",\"claro\"\r\n"); //APN name, username, password
+  delay(1000);
+  mySerial.print("AT+CIPMODE=0\r\n");
+  delay(1000);
+  mySerial.print("AT+CIICR\r\n");
+  delay(5000);
+
+}
 
 void setup() 
 {
   Serial.begin(9600);
+  ads.setGain(GAIN_SIXTEEN);
+  ads.begin();
+
   mySerial.begin(9600);
-  pinMode(sw, INPUT_PULLUP);
-  pinMode(led, OUTPUT);
-  digitalWrite(led, LOW);
+  GSM_LTE_START();
 
   //AT commands sent to the GSM chip for client ID and server address setup. This will establish the communication from now on.
-  Serial.println("Initializing connection sequence to the Server.");
   mySerial.println("ATE0");
   delay(2000);
   mySerial.println("AT+CMQTTSTART"); //Initiating the MQTT connection
@@ -37,128 +51,37 @@ void setup()
   delay(2000);
   mySerial.println(Subscribe); //Topic's name
   delay(2000);
-  mySerial.println("AT+CMQTTSUB=0,4,1,1"); //Length of the message
+  mySerial.println("AT+CMQTTSUB=0,5,1,1"); //Sets the length of the message
   delay(2000);
-  mySerial.println("HAII"); //message
+  mySerial.println("START"); //Sends the message
   delay(2000);
-  Serial.println("Done");
+
 }
 
-void loop() 
-{
-  String a;
-  if(state==0)
-  {
+void loop(){
+  
+  int16_t adc0;
+  int16_t sensor_value;
+  int wordCount = 0;
+  bool dataTransmission = false;
+ 
+  adc0 = ads.readADC_SingleEnded(0);
+  sensor_value = adc0 * multiplier;
 
-    if(digitalRead(sw) == 0 && flag1 == 0)
-    {
-      //PUBLISH MESSAGE
-      flag1 = 1;
-      digitalWrite(led, HIGH);
-      Serial.println("Publishing Message: LED ON");
-      mySerial.println("AT+CMQTTTOPIC=0,8"); //AT Command for Setting up the Publish Topic Name
-      delay(1000);
-      mySerial.println(Publish); //Topic Name
-      delay(1000);
-      mySerial.println("AT+CMQTTPAYLOAD=0,1"); //Payload length
-      delay(1000);
-      mySerial.println("a"); //Payload message
-      delay(1000);
-      mySerial.println("AT+CMQTTPUB=0,1,60"); //Acknowledgment
-      delay(1000);
-    }
-    else if(digitalRead(sw) == 0 && flag1 == 1)
-    {
-      flag1 = 0;
-     digitalWrite(led, LOW); 
-      Serial.println("Publishing Message: LED OFF");
-      mySerial.println("AT+CMQTTTOPIC=0,8"); //AT Command for Setting up the Publish Topic Name
-      delay(1000);
-      mySerial.println(Publish); //Topic Name
-      delay(1000);
-      mySerial.println("AT+CMQTTPAYLOAD=0,1"); //Payload length
-      delay(1000);
-      mySerial.println("b"); //Payload message
-      delay(1000);
-      mySerial.println("AT+CMQTTPUB=0,1,60"); //Acknowledgment
-      delay(1000);
-    }
-  }
-  if(state==1)
-  {
-    if(digitalRead(sw) == 0 && flag1 == 0)
-    {
-      //PUBLISH MESSAGE
-      flag1 = 1;
-      digitalWrite(led, LOW);
-      Serial.println("Publishing Message: LED OFF");
-      mySerial.println("AT+CMQTTTOPIC=0,8"); //AT Command for Setting up the Publish Topic Name
-      delay(1000);
-      mySerial.println(Publish); //Topic Name
-      delay(1000);
-      mySerial.println("AT+CMQTTPAYLOAD=0,1"); //Payload length
-      delay(1000);
-      mySerial.println("b"); //Payload message
-      delay(1000);
-      mySerial.println("AT+CMQTTPUB=0,1,60"); //Acknowledgment
-      delay(1000);
-    }
-    else if(digitalRead(sw) == 0 && flag1 == 1)
-    {
-      flag1 = 0;
-      digitalWrite(led,HIGH); 
-      Serial.println("Publishing Message: LED ON");
-      mySerial.println("AT+CMQTTTOPIC=0,8"); //AT Command for Setting up the Publish Topic Name
-      delay(1000);
-      mySerial.println(Publish); //Topic Name
-      delay(1000);
-      mySerial.println("AT+CMQTTPAYLOAD=0,1"); //Payload length
-      delay(1000);
-      mySerial.println("a"); //Payload message
-      delay(1000);
-      mySerial.println("AT+CMQTTPUB=0,1,60"); //Acknowledgment
-      delay(1000);
-    }
-  }
-
- //Receiving MODEM Response
-  while(mySerial.available()>0)
-  {
-    delay(10);
-    a = mySerial.readString();
-    if(flag==0)
-    {
-      //Serial.println(a);
-    flag = 1;
-    }
-    //Serial.println(b);
-    if(a.indexOf("PAYLOAD") != -1)
-    {
-       flag = 0;
-       int new1 = a.indexOf("PAYLOAD");
-       String neww = a.substring(new1);
-       int new2 = neww.indexOf('\n');
-       String new3 = neww.substring(new2+1);
-       int new4 = new3.indexOf('\n');
-       String new5 = new3.substring(0,new4);
-       
-       Serial.println("Topic: led/subscribe");
-       Serial.print("Message is: ");
-       Serial.println(new5);
-       new5.remove(new5.length()-1);
-       if(new5 == "a")
-       {
-        state=1;
-        Serial.println("LED ON");
-        digitalWrite(led, HIGH);
-       }
-       else if(new5 == "b")
-       {
-        state=0;
-        flag1=0;
-        Serial.println("LED OFF");
-        digitalWrite(led, LOW);
-       }
-    }      
+//for(i = 0; i < 32000; i++){}
+  while(wordCount < 32000){
+    mySerial.println("AT+CMQTTTOPIC=0,8"); //AT Command for Setting up the Publish Topic Name
+    mySerial.println(Publish); //Topic's name
+    mySerial.println("AT+CMQTTPAYLOAD=0,16"); //Payload length
+    mySerial.println(sensor_value); //Payload message
+    mySerial.println("AT+CMQTTPUB=0,1,60"); //Acknowledgment
+    
+    wordCount++;
+    dataTransmission = true;
+  } 
+  
+  if(dataTransmission == true){
+      LowPower.deepSleep(3600000);
+      dataTransmission = false;
   }
 }

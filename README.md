@@ -1,14 +1,15 @@
 EN-US: This content was written in both English and Portuguese. To access content in English, click here:
 
-[English Description](#[en/us]-mercuriot---sensor-data-transmitter-via-gsm)
+[English Description](#en/us)
 
 PT-BR: Este conteúdo foi escrito em Inglês e em Português. Para acessar o conteúdo em Português, clique aqui:
 
-[Descrição em Português](#[pt/br]-mercuriot---transmissor-de-dados-de-sensor-via-gsm)
+[Descrição em Português](#pt/br)
 
 ---
 
-# [EN/US] MercurIOT - Sensor Data Transmitter via GSM
+# EN/US
+MercurIOT - Sensor Data Transmitter via GSM
 
 ## Objective
 
@@ -21,7 +22,7 @@ The scope of this project encopasses the development of both the PCB and firmwar
 <!-- toc -->
 
 - Platform
-  - [Technical Specifications (#technical-specifications)
+  - [Technical Specifications](#technical-specifications)
 
 <!-- tocstop -->
 
@@ -31,7 +32,8 @@ The scope of this project encopasses the development of both the PCB and firmwar
 
 ---
   
-# [PT/BR] MercurIOT - Transmissor de Dados de Sensor via GSM
+# PT/BR
+# MercurIOT - Transmissor de Dados de Sensor via GSM
 
 ## Objetivo
 
@@ -44,7 +46,7 @@ O escopo deste projeto abriga o desenvolvimento de ambos PCI e firmware necessá
 <!-- toc -->
 
 - Plataforma
-  - Especificações Técnicas (#especificações-técnicas)
+  - [Especificações Técnicas](#especificações-técnicas)
 
 <!-- tocstop -->
 

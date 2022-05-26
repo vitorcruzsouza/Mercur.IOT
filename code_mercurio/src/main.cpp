@@ -1,142 +1,94 @@
 #include <Arduino.h>
 #include <Wire.h>
+#include <SoftwareSerial.h>
+#include <Adafruit_ADS1015.h>
+#include <ArduinoLowPower.h>
+ 
+Adafruit_ADS1115 ads;
+const float multiplier = 0.1875F;
+//This sets the parameters used by the ADS1115 library to properly receive the sensor's data.
 
-int led = 13;
-unsigned int Counter = 0;
-unsigned long datalength, CheckSum, RLength;
-unsigned short topiclength;
-unsigned char topic[30];
-char str[250];
-unsigned char encodedByte;
-int X;
-unsigned short MQTTProtocolNameLength;
-unsigned short MQTTClientIDLength;
-unsigned short MQTTUsernameLength;
-unsigned short MQTTPasswordLength;
-const char MQTTHost[30] = "m10.cloudmqtt.com";
-const char MQTTPort[10] = "17434";
-const char MQTTClientID[20] = "ABCDEF";
-const char MQTTTopic[30] = "valetron";
-const char MQTTProtocolName[10] = "MQIsdp";
-const char MQTTLVL = 0x03;
-const char MQTTFlags = 0xC2;
-const unsigned int MQTTKeepAlive = 60;
-const char MQTTUsername[30] = "dxxkgkpp";
-const char MQTTPassword[35] = "qAUZBdaSIULx";
-const char MQTTQOS = 0x00;
-const char MQTTPacketID = 0x0001;
-void setup() {
-  pinMode(led, OUTPUT);
+SoftwareSerial mySerial(6,7);
+
+
+String Publish = "sensorReading/publish"; //Publish Topic
+String Subscribe = "sensorReading/subscribe"; //Subscribe Topic
+
+void GSM_LTE_START(){
+
+//This sets the cellphone provider. In this case, Claro BR is being used as an example.
+mySerial.print("AT+CSTT=\"claro.com.br\",\"claro\",\"claro\"\r\n"); //APN name, username, password
+  delay(1000);
+  mySerial.print("AT+CIPMODE=0\r\n");
+  delay(1000);
+  mySerial.print("AT+CIICR\r\n");
+  delay(5000);
+
+}
+
+void setup() 
+{
   Serial.begin(9600);
-  Serial.println("Arduino MQTT Tutorial, Valetron Systems @www.raviyp.com ");
-  delay(3000);
+  ads.setGain(GAIN_SIXTEEN);
+  ads.begin();
+  //This starts the I2C communication between the ADS1115 analog-digital converter and the microcontroller.
+
+  mySerial.begin(9600);
+  GSM_LTE_START();
+
+  //AT commands sent to the GSM chip for client ID and server address setup. This will establish the communication from now on.
+  mySerial.println("ATE0");
+  delay(2000);
+  mySerial.println("AT+CMQTTSTART"); //Initiating the MQTT connection
+  delay(2000); 
+  mySerial.println("AT+CMQTTACCQ=0,\"mercurioSensor1\""); //Informing the client ID
+  delay(2000);
+  mySerial.println("AT+CMQTTCONNECT=0,\"tcp://example.com:00000\",90,1"); //Server address to which the client will connect to
+  delay(2000);
+
+  //The delay times set above are for waiting for the data to be sent, but can be substituted by a verification code for AT confirmation codes.
+
+  //SUBSCRIBE MESSAGE
+  mySerial.println("AT+CMQTTSUBTOPIC=0,9,1"); //AT command for establishing the Subscribe topic's name 
+  delay(2000);
+  mySerial.println(Subscribe); //Topic's name
+  delay(2000);
+  mySerial.println("AT+CMQTTSUB=0,5,1,1"); //Sets the length of the message
+  delay(2000);
+  mySerial.println("START"); //Sends the message
+  delay(2000);
+
 }
-void SendConnectPacket(void) {
-  Serial.print("\r\nAT+CIPSEND\r\n");
-  delay(3000);
-  Serial.write(0x10);
-  MQTTProtocolNameLength = strlen(MQTTProtocolName);
-  MQTTClientIDLength = strlen(MQTTClientID);
-  MQTTUsernameLength = strlen(MQTTUsername);
-  MQTTPasswordLength = strlen(MQTTPassword);
-  datalength = MQTTProtocolNameLength + 2 + 4 + MQTTClientIDLength + 2 + MQTTUsernameLength + 2 + MQTTPasswordLength + 2;
-  X = datalength;
-  do {
-    encodedByte = X % 128;
-    X = X / 128;
-    if (X > 0) {
-      encodedByte |= 128;
-    }
-    Serial.write(encodedByte);
-  }
-  while (X > 0);
-  Serial.write(MQTTProtocolNameLength >> 8);
-  Serial.write(MQTTProtocolNameLength & 0xFF);
-  Serial.print(MQTTProtocolName);
-  Serial.write(MQTTLVL); // LVL
-  Serial.write(MQTTFlags); // Flags
-  Serial.write(MQTTKeepAlive >> 8);
-  Serial.write(MQTTKeepAlive & 0xFF);
-  Serial.write(MQTTClientIDLength >> 8);
-  Serial.write(MQTTClientIDLength & 0xFF);
-  Serial.print(MQTTClientID);
-  Serial.write(MQTTUsernameLength >> 8);
-  Serial.write(MQTTUsernameLength & 0xFF);
-  Serial.print(MQTTUsername);
-  Serial.write(MQTTPasswordLength >> 8);
-  Serial.write(MQTTPasswordLength & 0xFF);
-  Serial.print(MQTTPassword);
-  Serial.write(0x1A);
-}
-void SendPublishPacket(void) {
-  Serial.print("\r\nAT+CIPSEND\r\n");
-  delay(3000);
-  memset(str, 0, 250);
-  topiclength = sprintf((char * ) topic, MQTTTopic);
-  datalength = sprintf((char * ) str, "%s%u", topic, Counter);
-  delay(1000);
-  Serial.write(0x30);
-  X = datalength + 2;
-  do {
-    encodedByte = X % 128;
-    X = X / 128;
-    if (X > 0) {
-      encodedByte |= 128;
-    }
-    Serial.write(encodedByte);
-  }
-  while (X > 0);
-  Serial.write(topiclength >> 8);
-  Serial.write(topiclength & 0xFF);
-  Serial.print(str);
-  Serial.write(0x1A);
-}
-void SendSubscribePacket(void) {
-  Serial.print("\r\nAT+CIPSEND\r\n");
-  delay(3000);
-  memset(str, 0, 250);
-  topiclength = strlen(MQTTTopic);
-  datalength = 2 + 2 + topiclength + 1;
-  delay(1000);
-  Serial.write(0x82);
-  X = datalength;
-  do {
-    encodedByte = X % 128;
-    X = X / 128;
-    if (X > 0) {
-      encodedByte |= 128;
-    }
-    Serial.write(encodedByte);
-  }
-  while (X > 0);
-  Serial.write(MQTTPacketID >> 8);
-  Serial.write(MQTTPacketID & 0xFF);
-  Serial.write(topiclength >> 8);
-  Serial.write(topiclength & 0xFF);
-  Serial.print(MQTTTopic);
-  Serial.write(MQTTQOS);
-  Serial.write(0x1A);
-}
-void loop() {
-  Serial.print("AT+CSTT=\"www\",\"\",\"\"\r\n");
-  delay(1000);
-  Serial.print("AT+CIPMODE=0\r\n");
-  delay(1000);
-  Serial.print("AT+CIICR\r\n");
-  delay(5000);
-  Serial.print("AT+CIPSTART=\"TCP\",\"m10.cloudmqtt.com\",\"17434\"\r\n");
-  delay(4000);
-  SendConnectPacket();
-  delay(5000);
-  SendSubscribePacket();
-  while (1) {
-    if (Serial.available() > 0) {
-      str[0] = Serial.read();
-      Serial.write(str[0]);
-      if (str[0] == '1')
-        digitalWrite(led, HIGH);
-      if (str[0] == '0')
-        digitalWrite(led, LOW);
-    }
+
+void loop(){
+  
+  int16_t adc0;
+  int16_t sensor_value;
+  int wordCount = 0;
+  bool dataTransmission = false;
+ 
+  adc0 = ads.readADC_SingleEnded(0);
+  sensor_value = adc0 * multiplier;
+  //This converts the sensor value read by the 16-bit ADC (ADS1115)
+
+  while(wordCount < 256000){
+    mySerial.println("AT+CMQTTTOPIC=0,8"); //AT Command for Setting up the Publish Topic Name
+    mySerial.println(Publish); //Topic's name
+    mySerial.println("AT+CMQTTPAYLOAD=0,16"); //Payload length
+    mySerial.println(sensor_value); //Payload message
+    mySerial.println("AT+CMQTTPUB=0,1,60"); //Acknowledgment
+
+    //Publishes a topic containing 1 sensor read cycle (16 bits in length).
+    //After this loop is completed 256k times, the transmitter has completed the required 512kB of sensor data sent.
+
+    wordCount++;
+    dataTransmission = true;
+  } 
+  
+  if(dataTransmission == true){
+      LowPower.deepSleep(3600000);
+      dataTransmission = false;
+
+      //After the sensor data publishing loop ends, the microcontroller is sent into power saving mode for an hour.
   }
 }

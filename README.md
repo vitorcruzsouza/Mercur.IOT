@@ -6,7 +6,7 @@ PT-BR: Este conteúdo foi escrito em Inglês e em Português. Para acessar o con
 
 # EN/US
 # MercurIOT - Sensor Data Transmitter via GSM
-readme v1.51
+readme v1.6
 
 ## Contents
 
@@ -16,12 +16,13 @@ readme v1.51
   - [Objective](#objective)
   - [Behind the name](#behind-the-name)
 - [2. Plataform](#platform)
-  - [Conceptualization](#conceptualization)
+  - [Conceptualization - Electronics](#conceptualization---electronics)
+  - [Conceptualization - Code](#conceptualization---code)
   - [Technical Specifications](#technical-specifications)
   - [Bill of Materials](#bill-of-materials)
 - [3. Circuit Schematic](#circuit-schematic)
   - [Full System](#full-system)
-  - [Power Supply](#power-supply)
+  - [Power Supply](#power-supply-and-battery-charging)
   - [Microcontroller](#microcontroller)
   - [GSM Communication](#gsm-communication)
   - [Sensor 16-bit ADC](#sensor-16bit-adc)
@@ -52,9 +53,7 @@ Inspired by the greek god Mercury, son of Zeus and messenger of the gods, Mercur
 
 ## Platform 
 
-### Conceptualization
-
-Electronics:
+### Conceptualization - Electronics:
 
 To send sensor information to a distant receiver, the **GSM tecnology** was selected - the same used for 3G/4G mobile data plans - due to the ease of access to nacional brazillian infrastructure to mobile network systems (where this project was conceived), thus high capacity for long distance tranmissions.
 
@@ -66,8 +65,21 @@ One of the limitations of the ATMEGA8, however, is the relatively low resolution
 
 Finally, to power the whole system, a **18650 Lithium-Ion** cell was selected, since this type of battery chemistry is very common and is currently one of the best options on Power Density to Price and/or size. Utilizing Li-Ion cells in this project allows it to be recharged, but adds a degree of complexity by requiring some battery monitoring and protection features. For this, the **BQ29707DSET** battery management IC is being used (features include overcharge protection, overdischarge protection, overcurrent protection) in conjunction with the **MT3608** boost-converter for stabilizing a 5VDC supply rail to all other electronics.
 
-Code:
+### Conceptualization - Code:
 
+To construct a wireless transmission solution, there are a few major things that have to be considered. The first is what information is going to be sent, the second is how it is going to be sent, and third but not least how it is going to be interpreted by what's receiving it.
+
+This way, the first problem that need to be tackled is the **information source** itself. In this project, for demonstration purposes, a hypothetical, unspecified, pre-amplified analog sensor is going to be used, as this is encopasses almost any type of application that telemetry sensors can be used in, since most physical quantity sensing devices output analog (voltage or current) signals.
+
+Since a 16-bit capabe Analog to Digital Converter (ADC) is being used to capture these sensed signals, these 16-bit values have to be processed accordingly. For that, the Adafruit_ADS1015.h library is used, to facilitate I2C communication between the microcontroller and the ADC unit and to interpret the information.
+
+Assuming a server is going to receive sensed data and utilize it, this processed information need to be sent via some medium. For this, the SIM7600EH chip has a list of GSM commands to perform varying tasks. If sent from the microcontroller to the GSM IC via serial UART communication, these commands will each perform an action through the 3G/4G communication line. [Here's a full list of AT commands and instructions on how to use them here.](https://usermanual.wiki/Document/SIM7500SIM760020SeriesAT20Command20ManualV107.443047306/html)
+
+The information that is going to be transmitted, however, needs to be encoded in a certain protocol, so that both parties of this system - client (transmitter) and server (receiver) - can understand what is being relayed; and more critically, know what to do with each information given.
+
+For this, the MQTT (Message Queuing Telemetry Transport) is used. It is a protocol based on TCP/IP network communication that simplifies parallel data transmission between multiple parties, specially for IoT applications such as this one, while providing a light and simple framework for less powerful devices to run on. [Read this for more information on how the MQTT protocol works.](https://randomnerdtutorials.com/what-is-mqtt-and-how-it-works/)
+
+Joining the AT (GSM) and MQTT communication formats, we can compile the data collected by whichever sensor is plugged into the MercurIOT transmitter, and send it to a MQTT topic dedicated to captured sensor data, which then can be subscribed to by any software or BI (Business Inteligence) suite that whishes to utilize or display that information.
 
 ### Technical Specifications
 
@@ -96,7 +108,7 @@ Code:
 
 ### Bill of Materials
 
-[Link to the Bill of Materials file](https://github.com/vitorcruzsouza/Mercur.IOT_TRACTIAN/blob/main/docs/BOM.md)
+[Link to the Bill of Materials file, complete with links for ordering the parts used globally.](https://github.com/vitorcruzsouza/Mercur.IOT_TRACTIAN/blob/main/docs/BOM.md)
 
 
 ## Circuit Schematic
@@ -107,24 +119,38 @@ Code:
 [Link to the full schematic file.](https://github.com/vitorcruzsouza/Mercur.IOT_TRACTIAN/blob/main/docs/Mercurio_SCHEMATIC-SHEET.pdf)
 ![circuit_fullTransmitter](https://user-images.githubusercontent.com/105023428/170516663-acb2df9d-1bf1-4365-934f-640ffca4a2db.png)
 
-### Power Supply
+### Power Supply and Battery Charging
 ![circuit_powerSupply](https://user-images.githubusercontent.com/105023428/170517248-25ec00fd-fefd-4260-bd2e-e3bbc67df707.jpg)
+
+The circuit above utilizes a BQ2970 battery management IC to monitor the lithium-ion battery's voltage and offer multiple protections. By utilizing a selection of multiple internal comparators, the IC monitors the voltage coming from the positive side of the battery through the "BAT" pin 5. Either when the voltage is too high (±4.2V), too low (±3.4V) or the current is too high (overcurrent or short-circuit), the IC deactivates of its "COUT" or "DOUT" outputs to disconnect the battery's negative side to Ground, through its two CSD16301Q2 MOSFET switches.
+
+Through the use of the MT3608 boost converter IC, both the battery's and the USB port's voltage are steped-up and regulated to 5VDC, for supplying both the ATMEGA and the SIM7600 chips. By using a zener diode between the USB port and the battery, as well as one between the boost converter an all of the componentes supplied, the circuit can be both powered on by the USB port and charge the battery simultaneously without causing a power loop.
 
 ### Microcontroller
 ![circuit_microcontroller](https://user-images.githubusercontent.com/105023428/170516701-eb2a85f5-869c-4f55-81ec-7cdb06461e7c.jpg)
 
+Together with the microcontroller are a couple of passive components to allow its basic functioning, like a 16MHz clock crystal and accompanying oscillating capacitors, varistors for USB power protection and a ferrite bead for filtering, a 500mA fuse between the power circuit and the VCC port of the ATMEGA chip, a RESET button and 6 open pins (ICSP) for connecting configuration signals, such as boot loading and resetting once again.
+
 ### GSM Communication
 ![circuit_GSM](https://user-images.githubusercontent.com/105023428/170516924-0f5be159-4d96-4755-9af3-4f805baac944.jpg)
+
+In this schematic, two S8050 transistors can be observed in series with the TXD and RXD transmission lines that are used to connect the SIM7600E-H and the ATMEGA8U-MU via UART. This is used to decouple both chips while no data is being transmitted, since the very TXD and RXD lines activate the transistors that let the data bits pass, so that these wires do not act as antennas and pickup any interference, stopping any of the two ICs accidentally interpret noise as information.
+
+Pins 17 - 20 are connected to the SIM card slot and therefore the SIM card inserted, and pin 82 is connected to a SMA antenna connector, so that any type or size of antenna desired can be used.
+
+The "PWRKEY" and "RESET" are pulled to ground so that the IC is always active. One improvement this circuit design could benefit from is having the microcontroller, via a switching device, have the option to activate or deactivate both the Reset and Power-Key pins so that the IC can be rebooted or turned off completely for power saving measures.
 
 ### Sensor 16bit ADC
 ![circuit_ADC](https://user-images.githubusercontent.com/105023428/170517353-3410a878-1fdd-434f-bc95-4db8422f6607.jpg)
 
+Last but not least, the ADS1115 16-bit ADC is connected to the SCL and SCA pins of the ATMEGA microcontroller, through which the ADC relays the sensed analog  signals through I2C serial communication. The sensor, whichever one may be chosen for the application, can be connected to the J4 screw terminal following the "VCC, Signal, GND" pinout standard.
 
 ## Printed Circuit Board (PCB)
 
 ### 2D Visualization of All Layers
 ![PCB_2D_all-layers](https://user-images.githubusercontent.com/105023428/170519094-61a02150-1d5c-445a-834e-b6d0c90607b1.png)
 
+For information all data lines excluding the antenna line, the traces were set to 10 mils (0.254 mm). For all other lines (power lines and antenna), the traces were set to 20 mils (0.5 mm), so that a maximum of 1.5 A can be supplied to all components and used for more power-intensive LTE data transmission.
 
 ### 2D Visualization of Top Layer
 ![PCB_2D_top-layer](https://user-images.githubusercontent.com/105023428/170519120-30f621f9-4eb5-49f6-9e1c-a1094c294fae.png)
@@ -155,12 +181,16 @@ E-mail: vitor.cruz.souza.2001@gmail.com</p>
 
 ---
 
+[Back to the top.](#contents)
+
 ---
 
   
 # PT/BR
 # MercurIOT - Transmissor de Dados de Sensor via GSM
-readme v1.5
+readme v1.52
+
+(Esta sessão ainda não foi totalmente traduzida).
 
 ## Conteúdos
 
@@ -236,8 +266,7 @@ Para realizar o envio de informações do sensor à distância, foi escolhido ut
 
 ### Lista de Materiais
 
-[Link para a Lista de Materiais](https://github.com/vitorcruzsouza/Mercur.IOT_TRACTIAN/blob/main/docs/BOM.md)
-
+[Link para a Lista de Materiais contendo também links para compra internacional dos componentes usados.](https://github.com/vitorcruzsouza/Mercur.IOT_TRACTIAN/blob/main/docs/BOM.md)
 
 
 ## Esquemático do Circuito
@@ -295,3 +324,5 @@ E-mail: vitor.cruz.souza.2001@gmail.com</p>
 
 
 ---
+
+[Ir para o topo.](#conteúdos)
